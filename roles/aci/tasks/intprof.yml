@@ -1,0 +1,17 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/intprof.csv"
+    fieldnames: intprof,desc,state
+    delimiter: ","
+  register: intprof
+- name: Add Interface Profile
+  cisco.aci.aci_interface_policy_leaf_profile:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    interface_profile: "{{ item.intprof }}"
+    description: "{{ item.desc }}"
+    state: "{{ item.state }}"
+  loop: "{{ intprof.list[1:] }}"

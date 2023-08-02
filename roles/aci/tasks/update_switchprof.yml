@@ -1,0 +1,17 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/update_switchprof.csv"
+    fieldnames: leaf_prof,int_prof,state
+    delimiter: ","
+  register: update_switchprof
+- name: Update Switch Profile
+  cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    leaf_profile: "{{ item.leaf_prof }}"
+    interface_selector: "{{ item.int_prof }}"
+    state: "{{ item.state }}"
+  loop: "{{ update_switchprof.list[1:] }}"
