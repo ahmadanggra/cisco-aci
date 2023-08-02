@@ -1,7 +1,15 @@
 ---
 # tasks file for aci
 # old using static task (import_tasks), update it using dynamic task (import_tasks)
-# import_tasks not working with tags, it only load it
+# include_tasks not working with tags, it only load it
+# order matter since aci some of aci configuration depent on other configuration
+- name: Add VPC Domain
+  import_tasks: vpc_domain.yml
+  tags:
+    - vpc_domain
+    - access_policies
+    - never
+
 - name: Add policy Group
   import_tasks: polgroup.yml
   tags: 
@@ -9,10 +17,31 @@
     - access_policies
     - never
 
+- name: Add Interface Profile
+  import_tasks: intprof.yml
+  tags:
+    - intprof
+    - access_policies
+    - never
+
 - name: Add Interface Selector
   import_tasks: intsel.yml
   tags:
     - intsel
+    - access_policies
+    - never
+
+- name: Add Switch Profile
+  import_tasks: switchprof.yml
+  tags:
+    - switchprof
+    - access_policies
+    - never
+
+- name: Update Switch Profile
+  import_tasks: update_switchprof.yml
+  tags:
+    - update_switchprof
     - access_policies
     - never
 

@@ -5,7 +5,7 @@
     fieldnames: domain,domain_type,pool,pool_type,pool_allocation_mode,state
     delimiter: ","
   register: domain
-- name: Update Vlan Pool
+- name: Update Domain to Vlan Pool Mapping
   cisco.aci.aci_domain_to_encap_pool:
     host: "{{ ansible_host }}"
     username: "{{ username }}"

@@ -1,3 +1,3 @@
 domain,domain_type,pool,pool_type,pool_allocation_mode,state
-PD-CLOUD-INTERNAL,phys,VLAN-CLOUD-MGMT,vlan,dynamic,present
-PD-CLOUD-MGMT,phys,VLAN-CLOUD-MGMT,vlan,dynamic,present
+Heroes_phys,phys,vlan-production,vlan,dynamic,present
+SnV_phys,phys,vlan-staging,vlan,dynamic,present

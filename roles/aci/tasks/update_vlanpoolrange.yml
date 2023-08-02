@@ -5,7 +5,7 @@
     fieldnames: pool,pool_allocation_mode,desc,block_start,block_end,alloc_mode,state
     delimiter: ","
   register: vlanpool
-- name: Update Vlan Pool
+- name: Update Vlan Pool Range
   cisco.aci.aci_vlan_pool_encap_block:
     host: "{{ ansible_host }}"
     username: "{{ username }}"

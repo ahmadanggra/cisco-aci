@@ -5,7 +5,7 @@
     fieldnames: policy_group,lag_type,link_level_policy,lldp_policy,port_channel_policy,cdp_policy,l2_interface_policy,aep,over_name,over_policy,state,api_rest_method
     delimiter: ","
   register: polgroup
-- name: Push VPC PolGroup
+- name: Push PolGroup
   cisco.aci.aci_interface_policy_leaf_policy_group:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -21,8 +21,8 @@
     aep: "{{ item.aep }}"
     state: "{{ item.state }}"
   loop: "{{ polgroup.list[1:] }}"
-  when: item.over_name == ""
-- name: Update VPC PolGroup Override
+  #when: item.over_name == ""
+- name: Update PC/VPC Member Port Policy Groups
   cisco.aci.aci_rest:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
