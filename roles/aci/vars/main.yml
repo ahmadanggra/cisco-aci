@@ -1,0 +1,5 @@
+---
+# vars file for aci
+state: present
+method: post
+validate_certs: no

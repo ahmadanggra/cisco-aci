@@ -1,0 +1,4 @@
+pool,pool_allocation_mode,desc,block_start,block_end,alloc_mode,state
+vlan-production,dynamic,servers_vlan,300,350,static,present
+vlan-staging,dynamic,servers_staging_vlan,351,400,static,present
+

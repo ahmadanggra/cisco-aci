@@ -1,0 +1,3 @@
+pool,allocation_mode,desc,state
+vlan-production,dynamic,vlan production,present
+vlan-staging,dynamic,vlan staging,present

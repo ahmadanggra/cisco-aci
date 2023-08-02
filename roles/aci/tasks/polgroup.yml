@@ -1,0 +1,60 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/polgroup.csv"
+    fieldnames: policy_group,lag_type,link_level_policy,lldp_policy,port_channel_policy,cdp_policy,l2_interface_policy,aep,over_name,over_policy,state,api_rest_method
+    delimiter: ","
+  register: polgroup
+- name: Push VPC PolGroup
+  cisco.aci.aci_interface_policy_leaf_policy_group:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    lag_type: "{{ item.lag_type }}"
+    policy_group: "{{ item.policy_group }}"
+    link_level_policy: "{{ item.link_level_policy }}"
+    cdp_policy: "{{ item.cdp_policy }}"
+    lldp_policy: "{{ item.lldp_policy }}"
+    port_channel_policy: "{{ item.port_channel_policy }}"
+    l2_interface_policy: "{{ item.l2_interface_policy }}"
+    aep: "{{ item.aep }}"
+    state: "{{ item.state }}"
+  loop: "{{ polgroup.list[1:] }}"
+  when: item.over_name == ""
+- name: Update VPC PolGroup Override
+  cisco.aci.aci_rest:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    method: "{{ item.api_rest_method }}"
+    path: /api/node/mo/uni/infra/funcprof/accbundle-{{ item.policy_group }}.json
+    content:
+        {
+          "infraAccBndlGrp": {
+            "attributes": {
+              "dn": "uni/infra/funcprof/accbundle-{{ item.policy_group }}"
+            },
+            "children": [
+              {
+                "infraAccBndlSubgrp": {
+                  "attributes": {
+                    "name": "{{ item.over_name }}",
+                  },
+                  "children": [
+                    {
+                      "infraRsLacpInterfacePol": {
+                        "attributes": {
+                          "tnLacpIfPolName": "{{ item.over_policy }}"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+  loop: "{{ polgroup.list[1:] }}"
+  when: item.over_name

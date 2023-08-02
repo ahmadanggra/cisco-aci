@@ -1,0 +1,88 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/intsel.csv"
+    fieldnames: interface_profile,access_port_selector,desc,port_blk,from_port,to_port,policy_group,override,interface_type,state,api_rest_method
+    delimiter: ","
+  register: intsel
+- name: Push Interface Selector (without override polgroup)
+  cisco.aci.aci_access_port_to_interface_policy_leaf_profile:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    interface_profile: "{{ item.interface_profile }}"
+    access_port_selector: "{{ item.access_port_selector }}"
+    port_blk: "{{ item.port_blk }}"
+    from_port: "{{ item.from_port }}"
+    to_port: "{{ item.to_port }}"
+    policy_group: "{{ item.policy_group }}"
+    interface_type: "{{ item.interface_type }}"
+    description: "{{ item.desc }}"
+    state: "{{ item.state }}"
+  loop: "{{ intsel.list[1:] }}"
+  when: item.override == ""
+# Create aci rest api because currently ansible aci not support override group policy for it interface selector      
+- name: Push Interface Selector (with override polgroup)
+  cisco.aci.aci_rest:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    method: "{{ item.api_rest_method }}"
+    path: /api/node/mo/uni/infra/accportprof-{{item.interface_profile}}.json
+    # Change infraRsAccBaseGrp tDn as neccesary, accbundle (vpc or pc)  should change to accportgrp if using single interface
+    # Alternatively you can change the aci_access_port_to_interface_policy_leaf_profile.py or create override collection 
+    content:
+        {
+          "infraAccPortP": {
+            "attributes": {
+              "dn": "uni/infra/accportprof-{{item.interface_profile}}",
+              "name": "{{item.interface_profile}}"
+            },
+            "children": [
+              {
+                "infraHPortS": {
+                  "attributes": {
+                    "descr": "{{item.desc}}",
+                    "name": "{{item.access_port_selector}}",
+                    "rn": "hports-{{item.access_port_selector}}-typ-range",
+                    "type": "range"
+                  },
+                  "children": [
+                    {
+                      "infraRsAccBaseGrp": {
+                        "attributes": {
+                          "tDn": "uni/infra/funcprof/accbundle-{{item.policy_group}}"
+                        }
+                      }
+                    },
+                    {
+                      "infraPortBlk": {
+                        "attributes": {
+                          "name": "{{item.port_blk}}",
+                          "rn": "portblk-{{item.port_blk}}",
+                          "fromPort": "{{item.from_port}}",
+                          "toPort": "{{item.to_port}}"
+                        },
+                        "children": [
+                          {
+                            "infraRsAccBndlSubgrp": {
+                              "attributes": {
+                                "annotation": "",
+                                "tDn": "uni/infra/funcprof/accbundle-{{item.policy_group}}/accsubbndl-{{ item.override }}",
+                                "userdom": ":all:"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+  loop: "{{ intsel.list[1:] }}"
+  when: item.override

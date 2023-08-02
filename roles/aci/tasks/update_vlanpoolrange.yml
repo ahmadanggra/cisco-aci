@@ -1,0 +1,21 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars//update_vlanpoolrange.csv"
+    fieldnames: pool,pool_allocation_mode,desc,block_start,block_end,alloc_mode,state
+    delimiter: ","
+  register: vlanpool
+- name: Update Vlan Pool
+  cisco.aci.aci_vlan_pool_encap_block:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    pool: "{{ item.pool }}"
+    pool_allocation_mode: "{{ item.pool_allocation_mode }}"
+    description: "{{ item.desc }}"
+    block_start: "{{ item.block_start }}"
+    block_end: "{{ item.block_end }}"
+    allocation_mode: "{{ item.alloc_mode }}"
+    state: "{{ item.state }}"
+  loop: "{{ vlanpool.list[1:] }}"

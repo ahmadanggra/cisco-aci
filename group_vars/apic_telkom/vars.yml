@@ -1,0 +1,4 @@
+---
+username: "{{ vault_username }}"
+password: "{{ vault_password }}"
+

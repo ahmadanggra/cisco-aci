@@ -1,0 +1,45 @@
+---
+# tasks file for aci
+# old using static task (import_tasks), update it using dynamic task (import_tasks)
+# import_tasks not working with tags, it only load it
+- name: Add policy Group
+  import_tasks: polgroup.yml
+  tags: 
+    - polgroup
+    - access_policies
+    - never
+
+- name: Add Interface Selector
+  import_tasks: intsel.yml
+  tags:
+    - intsel
+    - access_policies
+    - never
+
+- name: Add Vlan Pool
+  import_tasks: vlanpool.yml
+  tags:
+    - vlanpool
+    - access_policies
+    - never
+
+- name: Update Vlan Pool Range
+  import_tasks: update_vlanpoolrange.yml
+  tags:
+    - update_vlanpoolrange
+    - access_policies
+    - never
+
+- name: Update Domain Bind to Vlan Pool
+  import_tasks: update_domain_vlanpool.yml
+  tags:
+    - update_domain_vlanpool
+    - access_policies
+    - never
+
+- name: Help
+  ansible.builtin.debug:
+    msg:
+    - "ansible-playbook aci.yml --list-tags -> check available tags"
+    - "ansible-playbook aci.yml --tags tags-1,tags-2,tags-n --ask-vault-pass -> will run tagged task"
+  tags: help

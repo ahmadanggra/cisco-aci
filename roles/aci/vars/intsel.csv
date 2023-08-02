@@ -1,0 +1,4 @@
+interface_profile,access_port_selector,desc,port_blk,from_port,to_port,policy_group,override,interface_type,state,api_rest_method
+Heroes_corporate_external,1:30,desc-1,block2,30,30,Heroes_corporate_external,,switch_port,present,post
+Heroes_corporate_external,1:31,desc-1,block2,31,31,Heroes_corporate_external,,switch_port,present,post
+Heroes_corporate_external,1:32-33,desc-1,block2,32,33,Heroes_corporate_external,,switch_port,present,post

@@ -1,0 +1,20 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/update_domain_vlanpool.csv"
+    fieldnames: domain,domain_type,pool,pool_type,pool_allocation_mode,state
+    delimiter: ","
+  register: domain
+- name: Update Vlan Pool
+  cisco.aci.aci_domain_to_encap_pool:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    domain: "{{ item.domain }}"
+    domain_type: "{{ item.domain_type }}"
+    pool: "{{ item.pool }}"
+    pool_type: "{{ item.pool_type }}"
+    pool_allocation_mode: "{{ item.pool_allocation_mode }}"
+    state: "{{ item.state }}"
+  loop: "{{ domain.list[1:] }}"

@@ -1,0 +1,11 @@
+---
+- name: Provisioning aci fabric
+  # change accordingly usage for hosts
+  hosts: sandbox_aci
+  connection: local
+  gather_facts: false
+  vars_files:
+    - vars/main.yml
+  # choose role either ndo or aci
+  roles:
+    - aci

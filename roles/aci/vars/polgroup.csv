@@ -1,0 +1,4 @@
+policy_group,lag_type,link_level_policy,lldp_policy,port_channel_policy,cdp_policy,l2_interface_policy,aep,over_name,over_policy,state,api_rest_method
+vpc_101-102-a,node,default,default,lacp_active,default,default,default,lacp_vpc_101-102-a,lacp-fast,present,post
+vpc_101-102-b,node,default,default,lacp_active,default,default,default,,,present,post
+vpc_101-102-c,node,default,default,lacp_active,default,default,default,lacp_vpc_101-102-c,lacp-fast,present,post
