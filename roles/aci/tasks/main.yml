@@ -3,6 +3,8 @@
 # old using static task (import_tasks), update it using dynamic task (import_tasks)
 # include_tasks not working with tags, it only load it
 # order matter since aci some of aci configuration depent on other configuration
+
+# Access Policied Definition
 - name: Add VPC Domain
   import_tasks: vpc_domain.yml
   tags:
@@ -66,6 +68,15 @@
     - access_policies
     - never
 
+# Tenant Policies Definition
+- name: Create Contract
+  import_tasks: contract.yml
+  tags:
+    - contract
+    - tenant_policies
+    - never
+
+# Ulitilies Definition
 - name: Help
   ansible.builtin.debug:
     msg:

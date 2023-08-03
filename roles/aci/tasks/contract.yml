@@ -1,0 +1,72 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/contract.csv"
+    fieldnames: tenant,contract,scope,subject,apply_both_direction,reverse_filter,action,filter,entry,ether_type,ip_protocol,dst_port_start,dst_port_end,cont_desc,subj_desc,filt_desc,state
+    delimiter: ","
+  register: contract
+- name: Add Filter
+  cisco.aci.aci_filter:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    filter: "{{ item.filter }}"
+    description: "{{ item.filt_desc }}"
+    tenant: "{{ item.tenant }}"
+    state: "{{ item.state }}"
+  loop: "{{ contract.list[1:] }}"
+- name: Add Filter Entries
+  cisco.aci.aci_filter_entry:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    entry: "{{ item.entry }}"
+    filter: "{{ item.filter }}"
+    tenant: "{{ item.tenant }}"
+    ether_type: "{{ item.ether_type }}"
+    ip_protocol: "{{ item.ip_protocol }}"
+    dst_port_start: "{{ item.dst_port_start }}"
+    dst_port_end: "{{ item.dst_port_end }}"
+    state: "{{ item.state }}"
+  loop: "{{ contract.list[1:] }}"
+- name: Add Contract
+  cisco.aci.aci_contract:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    contract: "{{ item.contract }}"
+    description: "{{ item.cont_desc }}"
+    scope: "{{ item.scope }}"
+    state: "{{ item.state }}"
+  loop: "{{ contract.list[1:] }}"
+- name: Add Contract Subject
+  cisco.aci.aci_contract_subject:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    contract: "{{ item.contract }}"
+    subject: "{{ item.subject }}"
+    description: "{{ item.subj_desc }}"
+    reverse_filter: "{{ item.reverse_filter }}"
+    apply_both_direction: "{{ item.apply_both_direction }}"
+    state: "{{ item.state }}"
+  loop: "{{ contract.list[1:] }}"
+- name: Bind Contract Subject with Filter
+  cisco.aci.aci_contract_subject_to_filter:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    contract: "{{ item.contract }}"
+    subject: "{{ item.subject }}"
+    filter: "{{ item.filter }}"
+    action: "{{ item.action }}"
+    state: "{{ item.state }}"
+  loop: "{{ contract.list[1:] }}"
