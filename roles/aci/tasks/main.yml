@@ -111,6 +111,13 @@
     - tenant_policies
     - never
 
+- name: Update EPG static port
+  import_tasks: epg_staticport.yml
+  tags:
+    - epg_staticport
+    - tenant_policies
+    - never
+
 - name: Apply vzAny
   import_tasks: vzany.yml
   tags:

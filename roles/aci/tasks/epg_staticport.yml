@@ -1,0 +1,26 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/epg_staticport.csv"
+    fieldnames: tenant,ap,epg,deploy_immediacy,encap_id,interface_mode,interface_type,interface,leafs,pod,state
+    delimiter: ","
+  register: epg_staticport
+- name: Add static port
+  cisco.aci.aci_bulk_static_binding_to_epg:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    ap: "{{ item.ap }}"
+    epg: "{{ item.epg }}"
+    deploy_immediacy: "{{ item.deploy_immediacy }}"
+    encap_id: "{{ item.encap_id }}"
+    interface_mode: "{{ item.interface_mode }}"
+    interface_type: "{{ item.interface_type }}"
+    interface_configs:
+      - interface: "{{ item.interface }}"
+        leafs: "{{ item.leafs }}"
+        pod: "{{ item.pod }}"
+    state: "{{ item.state }}"
+  loop: "{{ epg_staticport.list[1:] }}"
