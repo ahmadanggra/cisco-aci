@@ -1,4 +1,0 @@
-interface_profile,access_port_selector,desc,port_blk,from_port,to_port,policy_group,override,interface_type
-101-102,1:1,desc-1,block2,1,1,vpc_101-102-a,lacp_vpc_101-102-a,vpc
-101-102,1:2,desc-2,block2,2,2,vpc_101-102-b,,vpc
-101-102,1:3,desc-3,block2,3,3,vpc_101-102-c,lacp_vpc_101-102-c,vpc

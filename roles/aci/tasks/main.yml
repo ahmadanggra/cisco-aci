@@ -97,6 +97,13 @@
     - tenant_policies
     - never
 
+- name: Create Bridge Domain
+  import_tasks: bd.yml
+  tags:
+    - bd
+    - tenant_policies
+    - never
+
 - name: Apply vzAny
   import_tasks: vzany.yml
   tags:

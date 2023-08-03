@@ -1,30 +1,21 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/switchprof.csv"
-    fieldnames: leaf_prof_name,leaf_sel_name,leaf_node_blk,from,to,desc,state
+    path: "{{ role_path }}/vars/bd.csv"
+    fieldnames: tenant,bd,vrf,arp_flooding,l2_unknown_unicast,limit_ip_learn,state
     delimiter: ","
-  register: switchprof
-- name: Add Switch Profile
-  cisco.aci.aci_switch_policy_leaf_profile:
+  register: bd
+- name: Add Bridge Domain
+  cisco.aci.aci_bd:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: "{{ validate_certs }}"
-    leaf_profile: "{{ item.leaf_prof_name }}"
-    description: "{{ item.desc }}"
+    tenant: "{{ item.tenant }}"
+    bd: "{{ item.bd }}"
+    vrf: "{{ item.vrf }}"
+    arp_flooding: "{{ item.arp_flooding }}"
+    l2_unknown_unicast: "{{ item.l2_unknown_unicast }}"
+    limit_ip_learn: "{{ item.limit_ip_learn }}"
     state: "{{ item.state }}"
-  loop: "{{ switchprof.list[1:] }}"
-- name: Bind Switch Profile to Leaf Selector
-  cisco.aci.aci_switch_leaf_selector:
-    host: "{{ ansible_host }}"
-    username: "{{ username }}"
-    password: "{{ password }}"
-    validate_certs: "{{ validate_certs }}"
-    leaf_profile: "{{ item.leaf_prof_name }}"
-    leaf: "{{ item.leaf_sel_name }}"
-    leaf_node_blk: "{{ item.leaf_node_blk }}"
-    from: "{{ item.from }}"
-    to: "{{ item.to }}"
-    state: "{{ item.state }}"
-  loop: "{{ switchprof.list[1:] }}"
+  loop: "{{ bd.list[1:] }}"
