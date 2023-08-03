@@ -1,0 +1,19 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/app_profile.csv"
+    fieldnames: tenant,ap,mon_pol,desc,state
+    delimiter: ","
+  register: app_profile
+- name: Add Application Profile
+  cisco.aci.aci_ap:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    ap: "{{ item.ap }}"
+    monitoring_policy: "{{ item.mon_pol }}"
+    description: "{{ item.desc }}"
+    state: "{{ item.state }}"
+  loop: "{{ app_profile.list[1:] }}"

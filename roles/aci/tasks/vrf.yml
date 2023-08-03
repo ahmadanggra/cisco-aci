@@ -1,0 +1,20 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/vrf.csv"
+    fieldnames: tenant,vrf,pol_pref,pol_direc,desc,state
+    delimiter: ","
+  register: vrf
+- name: Add Application Profile
+  cisco.aci.aci_vrf:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    vrf: "{{ item.vrf }}"
+    descr: "{{ item.desc }}"
+    policy_control_preference: "{{ item.pol_pref }}"
+    policy_control_direction: "{{ item.pol_direc }}"
+    state: "{{ item.state }}"
+  loop: "{{ vrf.list[1:] }}"

@@ -1,0 +1,19 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/vzany.csv"
+    fieldnames: tenant,vrf,contract,type,state
+    delimiter: ","
+  register: vzany
+- name: Apply vzany 
+  cisco.aci.aci_vzany_to_contract:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    vrf: "{{ item.vrf }}"
+    contract: "{{ item.contract }}"
+    type: "{{ item.type }}"
+    state: "{{ item.state }}"
+  loop: "{{ vzany.list[1:] }}"

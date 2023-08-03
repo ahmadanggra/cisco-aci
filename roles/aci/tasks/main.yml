@@ -69,10 +69,38 @@
     - never
 
 # Tenant Policies Definition
+- name: Create Tenant
+  import_tasks: tenant.yml
+  tags:
+    - tenant
+    - tenant_policies
+    - never
+
+- name: Create App Profile
+  import_tasks: app_profile.yml
+  tags:
+    - app_profile
+    - tenant_policies
+    - never
+
+- name: Create VRF
+  import_tasks: vrf.yml
+  tags:
+    - vrf
+    - tenant_policies
+    - never
+
 - name: Create Contract
   import_tasks: contract.yml
   tags:
     - contract
+    - tenant_policies
+    - never
+
+- name: Apply vzAny
+  import_tasks: vzany.yml
+  tags:
+    - vzany
     - tenant_policies
     - never
 

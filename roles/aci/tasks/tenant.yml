@@ -1,0 +1,17 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/tenant.csv"
+    fieldnames: tenant,desc,state
+    delimiter: ","
+  register: tenant
+- name: Add Tenant
+  cisco.aci.aci_tenant:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    description: "{{ item.desc }}"
+    state: "{{ item.state }}"
+  loop: "{{ tenant.list[1:] }}"
