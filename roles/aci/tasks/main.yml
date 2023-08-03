@@ -104,6 +104,13 @@
     - tenant_policies
     - never
 
+- name: Create EPG
+  import_tasks: epg.yml
+  tags:
+    - epg
+    - tenant_policies
+    - never
+
 - name: Apply vzAny
   import_tasks: vzany.yml
   tags:
