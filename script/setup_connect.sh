@@ -10,4 +10,7 @@ nmcli connection up enp0s8_dhcp 2> /dev/null
 ip route del default
 ip route add default via 192.168.1.1 dev enp0s3
 # change the network destination as needed
+# Cisco Devnet APIC route
 ip route add 10.10.20.0/24 via 10.0.3.2 dev enp0s8
+# Gridtech route
+#ip route add 172.20.1.0/24 via 10.0.3.2 dev enp0s8

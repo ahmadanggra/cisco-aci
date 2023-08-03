@@ -16,6 +16,7 @@
     tenant: "{{ item.tenant }}"
     state: "{{ item.state }}"
   loop: "{{ contract.list[1:] }}"
+  when: item.filter != ""
 - name: Add Filter Entries
   cisco.aci.aci_filter_entry:
     host: "{{ ansible_host }}"
@@ -31,6 +32,7 @@
     dst_port_end: "{{ item.dst_port_end }}"
     state: "{{ item.state }}"
   loop: "{{ contract.list[1:] }}"
+  when: item.entry != ""
 - name: Add Contract
   cisco.aci.aci_contract:
     host: "{{ ansible_host }}"
@@ -57,6 +59,7 @@
     apply_both_direction: "{{ item.apply_both_direction }}"
     state: "{{ item.state }}"
   loop: "{{ contract.list[1:] }}"
+  when: item.subject != ""
 - name: Bind Contract Subject with Filter
   cisco.aci.aci_contract_subject_to_filter:
     host: "{{ ansible_host }}"
@@ -70,3 +73,4 @@
     action: "{{ item.action }}"
     state: "{{ item.state }}"
   loop: "{{ contract.list[1:] }}"
+  when: item.contract != "" and item.subject != "" and item.filter != ""
