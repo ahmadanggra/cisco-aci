@@ -1,0 +1,32 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/update_domain_aep.csv"
+    fieldnames: aep,domain,domain_type,vm_provider,state
+    delimiter: ","
+  register: aep
+- name: Update domain bind to AEP without VMM
+  cisco.aci.aci_aep_to_domain:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    aep: "{{ item.aep }}"
+    domain: "{{ item.domain }}"
+    domain_type: "{{ item.domain_type }}"
+    state: "{{ item.state }}"
+  loop: "{{ aep.list[1:] }}"
+  when: item.vm_provider == ""
+- name: Update domain bind to AEP with VMM
+  cisco.aci.aci_aep_to_domain:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    aep: "{{ item.aep }}"
+    domain: "{{ item.domain }}"
+    domain_type: "{{ item.domain_type }}"
+    vm_provider: "{{ item.vm_provider }}"
+    state: "{{ item.state }}"
+  loop: "{{ aep.list[1:] }}"
+  when: item.vm_provider

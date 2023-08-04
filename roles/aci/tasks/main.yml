@@ -82,6 +82,13 @@
     - access_policies
     - never
 
+- name: Add AEP
+  import_tasks: aep.yml
+  tags:
+    - aep
+    - access_policies
+    - never
+
 - name: Add Domain
   import_tasks: domain.yml
   tags:
@@ -93,6 +100,13 @@
   import_tasks: update_domain_vlanpool.yml
   tags:
     - update_domain_vlanpool
+    - access_policies
+    - never
+
+- name: Update Domain Bind to AEP
+  import_tasks: update_domain_aep.yml
+  tags:
+    - update_domain_aep
     - access_policies
     - never
 
