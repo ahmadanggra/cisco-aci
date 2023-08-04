@@ -1,0 +1,36 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/cdp.csv"
+    fieldnames: name,adm_state,state
+    delimiter: ","
+  register: cdp
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/lldp.csv"
+    fieldnames: lldp_policy,rx_state,tx_state,state
+    delimiter: ","
+  register: lldp
+- name: Add CDP policies
+  cisco.aci.aci_interface_policy_cdp:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    name: "{{ item.name }}"
+    admin_state: "{{ item.adm_state }}"
+    state: "{{ item.state }}"
+  loop: "{{ cdp.list[1:] }}"
+  when: item.name != ""
+- name: Add LLDP policies
+  cisco.aci.aci_interface_policy_lldp:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    lldp_policy: "{{ item.lldp_policy }}"
+    receive_state: "{{ item.rx_state }}"
+    transmit_state: "{{ item.tx_state }}"
+    state: "{{ item.state }}"
+  loop: "{{ lldp.list[1:] }}"
+  when: item.lldp_policy != ""

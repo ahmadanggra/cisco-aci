@@ -1,0 +1,19 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/link_level.csv"
+    fieldnames: link_name,desc,autoneg,speed,state
+    delimiter: ","
+  register: link_level
+- name: Add link level policies
+  cisco.aci.aci_interface_policy_link_level:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    link_level_policy: "{{ item.link_name }}"
+    description: "{{ item.desc }}"
+    auto_negotiation: "{{ item.autoneg }}"
+    speed: "{{ item.speed }}"
+    state: "{{ item.state }}"
+  loop: "{{ link_level.list[1:] }}"

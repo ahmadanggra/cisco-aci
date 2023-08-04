@@ -5,6 +5,20 @@
 # order matter since aci some of aci configuration depent on other configuration
 
 # Access Policied Definition
+- name: Add Link Level
+  import_tasks: link_level.yml
+  tags:
+    - link_level
+    - access_policies
+    - never
+
+- name: Add CDP & LLDP 
+  import_tasks: cdp_lldp.yml
+  tags:
+    - cdp_lldp
+    - access_policies
+    - never
+
 - name: Add VPC Domain
   import_tasks: vpc_domain.yml
   tags:
