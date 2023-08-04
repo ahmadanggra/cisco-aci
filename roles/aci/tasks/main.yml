@@ -19,6 +19,13 @@
     - access_policies
     - never
 
+- name: Add Port-Channel 
+  import_tasks: port_channel.yml
+  tags:
+    - port_channel
+    - access_policies
+    - never
+
 - name: Add VPC Domain
   import_tasks: vpc_domain.yml
   tags:

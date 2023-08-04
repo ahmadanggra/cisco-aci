@@ -1,0 +1,19 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/port_channel.csv"
+    fieldnames: po_name,mode,min,max,state
+    delimiter: ","
+  register: port_channel
+- name: Add port-channel policies
+  cisco.aci.aci_interface_policy_port_channel:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    port_channel: "{{ item.po_name }}"
+    mode: "{{ item.mode }}"
+    min_links: "{{ item.min }}"
+    max_links: "{{ item.max }}"
+    state: "{{ item.state }}"
+  loop: "{{ port_channel.list[1:] }}"

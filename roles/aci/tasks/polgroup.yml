@@ -21,7 +21,6 @@
     aep: "{{ item.aep }}"
     state: "{{ item.state }}"
   loop: "{{ polgroup.list[1:] }}"
-  #when: item.over_name == ""
 - name: Update PC/VPC Member Port Policy Groups
   cisco.aci.aci_rest:
     host: "{{ ansible_host }}"
