@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ role_path }}/vars/bd.csv"
-    fieldnames: tenant,bd,vrf,arp_flooding,l2_unknown_unicast,limit_ip_learn,state
+    fieldnames: tenant,bd,vrf,arp_flooding,l2_unknown_unicast,limit_ip_learn,gateway,mask,state
     delimiter: ","
   register: bd
 - name: Add Bridge Domain
@@ -19,3 +19,16 @@
     limit_ip_learn: "{{ item.limit_ip_learn }}"
     state: "{{ item.state }}"
   loop: "{{ bd.list[1:] }}"
+- name: Update Subnet BD
+  cisco.aci.aci_bd_subnet:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    bd: "{{ item.bd }}"
+    gateway: "{{ item.gateway }}"
+    mask: "{{ item.mask }}"
+    state: "{{ item.state }}"
+  loop: "{{ bd.list[1:] }}"
+  when: item.gateway != ""
