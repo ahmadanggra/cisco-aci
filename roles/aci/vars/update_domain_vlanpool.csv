@@ -1,3 +1,0 @@
-domain,domain_type,pool,pool_type,pool_allocation_mode,state
-Heroes_phys,phys,vlan-production,vlan,dynamic,present
-SnV_phys,phys,vlan-staging,vlan,dynamic,present

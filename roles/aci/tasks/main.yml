@@ -82,6 +82,13 @@
     - access_policies
     - never
 
+- name: Add Domain
+  import_tasks: domain.yml
+  tags:
+    - domain
+    - access_policies
+    - never
+
 - name: Update Domain Bind to Vlan Pool
   import_tasks: update_domain_vlanpool.yml
   tags:

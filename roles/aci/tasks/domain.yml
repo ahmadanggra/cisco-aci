@@ -1,33 +1,29 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/update_domain_vlanpool.csv"
-    fieldnames: domain,domain_type,pool,pool_allocation_mode,vm_provider,state
+    path: "{{ role_path }}/vars/domain.csv"
+    fieldnames: domain,domain_type,vm_provider,state
     delimiter: ","
   register: domain
-- name: Update Domain to Vlan Pool Mapping
-  cisco.aci.aci_domain_to_vlan_pool:
+- name: Add domain without vmm
+  cisco.aci.aci_domain:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: "{{ validate_certs }}"
     domain: "{{ item.domain }}"
     domain_type: "{{ item.domain_type }}"
-    pool: "{{ item.pool }}"
-    pool_allocation_mode: "{{ item.pool_allocation_mode }}"
     state: "{{ item.state }}"
   loop: "{{ domain.list[1:] }}"
   when: item.vm_provider == ""
-- name: Update VMM Domain to Vlan Pool Mapping
-  cisco.aci.aci_domain_to_vlan_pool:
+- name: Add domain with vmm
+  cisco.aci.aci_domain:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: "{{ validate_certs }}"
     domain: "{{ item.domain }}"
     domain_type: "{{ item.domain_type }}"
-    pool: "{{ item.pool }}"
-    pool_allocation_mode: "{{ item.pool_allocation_mode }}"
     vm_provider: "{{ item.vm_provider }}"
     state: "{{ item.state }}"
   loop: "{{ domain.list[1:] }}"
