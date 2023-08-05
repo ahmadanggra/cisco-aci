@@ -6,6 +6,8 @@
     delimiter: ","
   register: contract
 - name: Add Filter
+  vars:
+    unique_filter: "{{ contract.list[1:] | unique('tenant','filter','filt_desc','state') }}"
   cisco.aci.aci_filter:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -15,9 +17,11 @@
     description: "{{ item.filt_desc }}"
     tenant: "{{ item.tenant }}"
     state: "{{ item.state }}"
-  loop: "{{ contract.list[1:] }}"
+  loop: "{{ unique_filter }}"
   when: item.filter != ""
 - name: Add Filter Entries
+  vars:
+     unique_filentry: "{{ contract.list[1:] | unique('tenant','filter','entry','ether_type','ip_protocol','dst_port_start','dst_port_end','state') }}"
   cisco.aci.aci_filter_entry:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -31,9 +35,11 @@
     dst_port_start: "{{ item.dst_port_start }}"
     dst_port_end: "{{ item.dst_port_end }}"
     state: "{{ item.state }}"
-  loop: "{{ contract.list[1:] }}"
+  loop: "{{ unique_filentry }}"
   when: item.entry != ""
 - name: Add Contract
+  vars:
+    unique_contract: "{{ contract.list[1:] | unique('tenant','contract','scope','cont_desc','state') }}"
   cisco.aci.aci_contract:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -44,8 +50,10 @@
     description: "{{ item.cont_desc }}"
     scope: "{{ item.scope }}"
     state: "{{ item.state }}"
-  loop: "{{ contract.list[1:] }}"
+  loop: "{{ unique_contract }}"
 - name: Add Contract Subject
+  vars:
+    unique_contsub: "{{ contract.list[1:] | unique('tenant','contract','subject','subj_desc','reverse_filter','apply_both_direction','state') }}"
   cisco.aci.aci_contract_subject:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -58,9 +66,11 @@
     reverse_filter: "{{ item.reverse_filter }}"
     apply_both_direction: "{{ item.apply_both_direction }}"
     state: "{{ item.state }}"
-  loop: "{{ contract.list[1:] }}"
+  loop: "{{ unique_contsub }}"
   when: item.subject != ""
 - name: Bind Contract Subject with Filter
+  vars:
+    unique_contract: "{{ contract.list[1:] | unique('tenant','contract','subject','filter','action','state') }}"
   cisco.aci.aci_contract_subject_to_filter:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -72,5 +82,5 @@
     filter: "{{ item.filter }}"
     action: "{{ item.action }}"
     state: "{{ item.state }}"
-  loop: "{{ contract.list[1:] }}"
+  loop: "{{ unique_contract }}"
   when: item.contract != "" and item.subject != "" and item.filter != ""
