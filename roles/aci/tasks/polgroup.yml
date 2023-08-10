@@ -5,7 +5,9 @@
     fieldnames: policy_group,lag_type,link_level_policy,lldp_policy,port_channel_policy,cdp_policy,l2_interface_policy,aep,over_name,over_policy,state,api_rest_method
     delimiter: ","
   register: polgroup
-- name: Push PolGroup
+- name: Push PolGroup for PC/VPC
+  vars:
+    unique_polgroup: "{{ polgroup.list[1:] | unique('policy_group','lag_type','link_level_policy','cdp_policy','lldp_policy','port_channel_policy','l2_interface_policy','aep','state') }}"
   cisco.aci.aci_interface_policy_leaf_policy_group:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -20,7 +22,26 @@
     l2_interface_policy: "{{ item.l2_interface_policy }}"
     aep: "{{ item.aep }}"
     state: "{{ item.state }}"
-  loop: "{{ polgroup.list[1:] }}"
+  loop: "{{ unique_polgroup }}"
+  when: item.lag_type == "link" or item.lag_type == "node"
+- name: Push PolGroup for access port
+  vars:
+    unique_polgroup: "{{ polgroup.list[1:] | unique('policy_group','lag_type','link_level_policy','cdp_policy','lldp_policy','l2_interface_policy','aep','state') }}"
+  cisco.aci.aci_interface_policy_leaf_policy_group:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    lag_type: "{{ item.lag_type }}"
+    policy_group: "{{ item.policy_group }}"
+    link_level_policy: "{{ item.link_level_policy }}"
+    cdp_policy: "{{ item.cdp_policy }}"
+    lldp_policy: "{{ item.lldp_policy }}"
+    l2_interface_policy: "{{ item.l2_interface_policy }}"
+    aep: "{{ item.aep }}"
+    state: "{{ item.state }}"
+  loop: "{{ unique_polgroup }}"
+  when: item.lag_type == "leaf"
 - name: Update PC/VPC Member Port Policy Groups
   cisco.aci.aci_rest:
     host: "{{ ansible_host }}"
