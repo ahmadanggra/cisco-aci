@@ -1,0 +1,63 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/l3out_extepg.csv"
+    fieldnames: tenant,l3out_name,extepg,desc,network,scope,aggregate,cont_type,cont_name,state
+    delimiter: ","
+  register: l3out_epg
+- name: Add L3out External EPG
+  vars:
+    epg_unique: "{{ l3out_epg.list[1:] | unique('tenant','l3out_name','extepg','desc','state') }}"
+  cisco.aci.aci_l3out_extepg:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    name: "{{ item.extepg }}"
+    description: "{{ item.desc }}"
+    state: "{{ item.state }}"
+  loop: "{{ epg_unique }}"
+- name: Add L3out External Subnet non default route
+  cisco.aci.aci_l3out_extsubnet:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    extepg: "{{ item.extepg }}"
+    network: "{{ item.network }}"
+    scope: "{{ item.scope }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_epg.list[1:] }}"
+  when: item.network != '0.0.0.0/0'
+- name: Add L3out External Subnet default route
+  cisco.aci.aci_l3out_extsubnet:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    extepg: "{{ item.extepg }}"
+    network: "{{ item.network }}"
+    scope: "{{ item.scope }}"
+    aggregate: "{{ item.aggregate }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_epg.list[1:] }}"
+  when: item.network == '0.0.0.0/0'
+- name: Bind L3out external epg with contract
+  cisco.aci.aci_l3out_extepg_to_contract:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    extepg: "{{ item.extepg }}"
+    contract: "{{ item.cont_name }}"
+    contract_type: "{{ item.cont_type }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_epg.list[1:] }}"

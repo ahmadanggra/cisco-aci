@@ -132,6 +132,45 @@
     - tenant_policies
     - never
 
+- name: Create L3out
+  import_tasks: l3out.yml
+  tags:
+    - l3out
+    - tenant_policies
+    - never
+
+- name: Create L3out Node
+  import_tasks: l3out_node.yml
+  tags:
+    - l3out
+    - l3out_node
+    - tenant_policies
+    - never
+
+- name: Create L3out Interface
+  import_tasks: l3out_interface.yml
+  tags:
+    - l3out
+    - l3out_interface
+    - tenant_policies
+    - never
+
+- name: Create L3out SVI IP Address 
+  import_tasks: l3out_vpc.yml
+  tags:
+    - l3out
+    - l3out_vpc
+    - tenant_policies
+    - never
+
+- name: Create L3out EPG
+  import_tasks: l3out_extepg.yml
+  tags:
+    - l3out
+    - l3out_epg
+    - tenant_policies
+    - never
+
 - name: Create Contract
   import_tasks: contract.yml
   tags:

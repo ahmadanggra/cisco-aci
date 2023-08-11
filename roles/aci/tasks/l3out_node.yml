@@ -1,0 +1,32 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/l3out_node.csv"
+    fieldnames: tenant,l3out_name,node_profile,pod_id,node_id,router_id,state
+    delimiter: ","
+  register: l3out_node
+- name: Add L3out Node
+  cisco.aci.aci_l3out_logical_node_profile:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    node_profile: "{{ item.node_profile }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_node.list[1:] }}"
+- name: Update L3out Node
+  cisco.aci.aci_l3out_logical_node:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    node_profile: "{{ item.node_profile }}"
+    pod_id: "{{ item.pod_id }}"
+    node_id: "{{ item.node_id }}"
+    router_id: "{{ item.router_id }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_node.list[1:] }}"

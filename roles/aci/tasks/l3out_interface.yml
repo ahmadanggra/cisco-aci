@@ -1,0 +1,40 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ role_path }}/vars/l3out_interface.csv"
+    fieldnames: tenant,l3out_name,node_profile,int_profile,pod_id,node_id,path_ep,int_type,encap,mode,state
+    delimiter: ","
+  register: l3out_int
+- name: Add L3out Interface Profile
+  vars:
+    l3out_int_new: "{{ l3out_int.list[1:] | unique('tenant','l3out_name','node_profile','int_profile','state') }}"
+  cisco.aci.aci_l3out_logical_interface_profile:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    node_profile: "{{ item.node_profile }}"
+    interface_profile: "{{ item.int_profile }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_int_new }}"
+- name: Add L3out VPC SVI Interface
+  cisco.aci.aci_l3out_interface:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    l3out: "{{ item.l3out_name }}"
+    node_profile: "{{ item.node_profile }}"
+    interface_profile: "{{ item.int_profile }}"
+    pod_id: "{{ item.pod_id }}"
+    node_id: "{{ item.node_id }}"
+    path_ep: "{{ item.path_ep }}"
+    interface_type: "{{ item.int_type}}"
+    encap: "{{ item.encap }}"
+    mode: "{{ item.mode }}"
+    state: "{{ item.state }}"
+  loop: "{{ l3out_int.list[1:] }}"
+  when: item.int_type == "ext-svi"
