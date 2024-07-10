@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars//update_vlanpoolrange.csv"
+    path: "{{ playbook_dir }}/vars//update_vlanpoolrange.csv"
     fieldnames: pool,pool_allocation_mode,desc,block_start,block_end,alloc_mode,state
     delimiter: ","
   register: vlanpool

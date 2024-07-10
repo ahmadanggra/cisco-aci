@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/bd.csv"
+    path: "{{ playbook_dir }}/vars/bd.csv"
     fieldnames: tenant,bd,vrf,arp_flooding,l2_unknown_unicast,limit_ip_learn,gateway,mask,state
     delimiter: ","
   register: bd

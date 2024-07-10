@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/switchprof.csv"
+    path: "{{ playbook_dir }}/vars/switchprof.csv"
     fieldnames: leaf_prof_name,leaf_sel_name,leaf_node_blk,from,to,desc,state
     delimiter: ","
   register: switchprof

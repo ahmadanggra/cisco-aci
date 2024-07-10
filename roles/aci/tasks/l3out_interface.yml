@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/l3out_interface.csv"
+    path: "{{ playbook_dir }}/vars/l3out_interface.csv"
     fieldnames: tenant,l3out_name,node_profile,int_profile,pod_id,node_id,path_ep,int_type,encap,mode,state
     delimiter: ","
   register: l3out_int

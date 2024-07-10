@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/l3out_extepg.csv"
+    path: "{{ playbook_dir }}/vars/l3out_extepg.csv"
     fieldnames: tenant,l3out_name,extepg,desc,network,scope,aggregate,cont_type,cont_name,state
     delimiter: ","
   register: l3out_epg

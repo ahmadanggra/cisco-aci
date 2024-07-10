@@ -1,13 +1,13 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/cdp.csv"
+    path: "{{ playbook_dir }}/vars/cdp.csv"
     fieldnames: name,adm_state,state
     delimiter: ","
   register: cdp
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/lldp.csv"
+    path: "{{ playbook_dir }}/vars/lldp.csv"
     fieldnames: lldp_policy,rx_state,tx_state,state
     delimiter: ","
   register: lldp

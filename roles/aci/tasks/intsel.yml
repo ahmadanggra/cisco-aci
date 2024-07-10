@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/intsel.csv"
+    path: "{{ playbook_dir }}/vars/intsel.csv"
     fieldnames: interface_profile,access_port_selector,desc,port_blk,from_port,to_port,policy_group,override,interface_type,state,api_rest_method
     delimiter: ","
   register: intsel

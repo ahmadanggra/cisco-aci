@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/contract.csv"
+    path: "{{ playbook_dir }}/vars/contract.csv"
     fieldnames: tenant,contract,scope,subject,apply_both_direction,reverse_filter,action,filter,entry,ether_type,ip_protocol,dst_port_start,dst_port_end,cont_desc,subj_desc,filt_desc,state
     delimiter: ","
   register: contract

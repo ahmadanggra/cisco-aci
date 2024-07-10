@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/epg.csv"
+    path: "{{ playbook_dir }}/vars/epg.csv"
     fieldnames: tenant,ap,epg,bd,desc,domain,dom_type,contract,cont_type,state
     delimiter: ","
   register: epg

@@ -1,7 +1,7 @@
 ---
 - name: Read CSV File
   community.general.read_csv:
-    path: "{{ role_path }}/vars/update_domain_aep.csv"
+    path: "{{ playbook_dir }}/vars/update_domain_aep.csv"
     fieldnames: aep,domain,domain_type,vm_provider,state
     delimiter: ","
   register: aep
