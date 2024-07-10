@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/update_switchprof.csv"
-    fieldnames: leaf_prof,int_prof,state
+    fieldnames: leaf_prof,int_prof
     delimiter: ","
   register: update_switchprof
 - name: Update Switch Profile
@@ -13,5 +13,5 @@
     validate_certs: "{{ validate_certs }}"
     leaf_profile: "{{ item.leaf_prof }}"
     interface_selector: "{{ item.int_prof }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ update_switchprof.list[1:] }}"

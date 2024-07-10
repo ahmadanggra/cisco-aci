@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/vpc_domain.csv"
-    fieldnames: name,id,sw_1,sw_2,state
+    fieldnames: name,id,sw_1,sw_2
     delimiter: ","
   register: vpc_domain
-- name: Add VPC domain
+- name: Configure VPC domain
   cisco.aci.aci_switch_policy_vpc_protection_group:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -15,5 +15,5 @@
     protection_group_id: "{{ item.id }}"
     switch_1_id: "{{ item.sw_1 }}"
     switch_2_id: "{{ item.sw_2 }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ vpc_domain.list[1:] }}"

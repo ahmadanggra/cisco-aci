@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars//vlanpool.csv"
-    fieldnames: pool,allocation_mode,desc,state
+    fieldnames: pool,allocation_mode,desc
     delimiter: ","
   register: vlanpool
-- name: Add Vlan Pool
+- name: Configure Vlan Pool
   cisco.aci.aci_vlan_pool:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -14,5 +14,5 @@
     pool: "{{ item.pool }}"
     pool_allocation_mode: "{{ item.allocation_mode }}"
     description: "{{ item.desc }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ vlanpool.list[1:] }}"

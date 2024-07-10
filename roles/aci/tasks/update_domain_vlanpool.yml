@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/update_domain_vlanpool.csv"
-    fieldnames: domain,domain_type,pool,pool_allocation_mode,vm_provider,state
+    fieldnames: domain,domain_type,pool,pool_allocation_mode,vm_provider
     delimiter: ","
   register: domain
 - name: Update Domain to Vlan Pool Mapping
@@ -15,7 +15,7 @@
     domain_type: "{{ item.domain_type }}"
     pool: "{{ item.pool }}"
     pool_allocation_mode: "{{ item.pool_allocation_mode }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ domain.list[1:] }}"
   when: item.vm_provider == ""
 - name: Update VMM Domain to Vlan Pool Mapping
@@ -29,6 +29,6 @@
     pool: "{{ item.pool }}"
     pool_allocation_mode: "{{ item.pool_allocation_mode }}"
     vm_provider: "{{ item.vm_provider }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ domain.list[1:] }}"
   when: item.vm_provider

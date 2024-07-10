@@ -5,56 +5,56 @@
 # order matter since aci some of aci configuration depent on other configuration
 
 # Access Policied Definition
-- name: Add Link Level
+- name: Configure Link Level
   import_tasks: link_level.yml
   tags:
     - link_level
     - access_policies
     - never
 
-- name: Add CDP & LLDP 
+- name: Configure CDP & LLDP 
   import_tasks: cdp_lldp.yml
   tags:
     - cdp_lldp
     - access_policies
     - never
 
-- name: Add Port-Channel 
+- name: Configure Port-Channel 
   import_tasks: port_channel.yml
   tags:
     - port_channel
     - access_policies
     - never
 
-- name: Add VPC Domain
+- name: Configure VPC Domain
   import_tasks: vpc_domain.yml
   tags:
     - vpc_domain
     - access_policies
     - never
 
-- name: Add policy Group
+- name: Configure policy Group
   import_tasks: polgroup.yml
   tags: 
     - polgroup
     - access_policies
     - never
 
-- name: Add Interface Profile
+- name: Configure Interface Profile
   import_tasks: intprof.yml
   tags:
     - intprof
     - access_policies
     - never
 
-- name: Add Interface Selector
+- name: Configure Interface Selector
   import_tasks: intsel.yml
   tags:
     - intsel
     - access_policies
     - never
 
-- name: Add Switch Profile
+- name: Configure Switch Profile
   import_tasks: switchprof.yml
   tags:
     - switchprof
@@ -68,7 +68,7 @@
     - access_policies
     - never
 
-- name: Add Vlan Pool
+- name: Configure Vlan Pool
   import_tasks: vlanpool.yml
   tags:
     - vlanpool
@@ -82,14 +82,14 @@
     - access_policies
     - never
 
-- name: Add AEP
+- name: Configure AEP
   import_tasks: aep.yml
   tags:
     - aep
     - access_policies
     - never
 
-- name: Add Domain
+- name: Configure Domain
   import_tasks: domain.yml
   tags:
     - domain
@@ -155,7 +155,7 @@
     - tenant_policies
     - never
 
-- name: Create L3out SVI IP Address 
+- name: Create L3out SVI IP Configureress 
   import_tasks: l3out_vpc.yml
   tags:
     - l3out

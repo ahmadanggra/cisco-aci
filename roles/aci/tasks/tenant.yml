@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/tenant.csv"
-    fieldnames: tenant,desc,state
+    fieldnames: tenant,desc
     delimiter: ","
   register: tenant
-- name: Add Tenant
+- name: Configure Tenant
   cisco.aci.aci_tenant:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -13,5 +13,5 @@
     validate_certs: "{{ validate_certs }}"
     tenant: "{{ item.tenant }}"
     description: "{{ item.desc }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ tenant.list[1:] }}"

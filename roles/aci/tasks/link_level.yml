@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/link_level.csv"
-    fieldnames: link_name,desc,autoneg,speed,state
+    fieldnames: link_name,desc,autoneg,speed
     delimiter: ","
   register: link_level
-- name: Add link level policies
+- name: Configure link level policies
   cisco.aci.aci_interface_policy_link_level:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -15,5 +15,5 @@
     description: "{{ item.desc }}"
     auto_negotiation: "{{ item.autoneg }}"
     speed: "{{ item.speed }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ link_level.list[1:] }}"

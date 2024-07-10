@@ -2,12 +2,12 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/l3out_interface.csv"
-    fieldnames: tenant,l3out_name,node_profile,int_profile,pod_id,node_id,path_ep,int_type,encap,mode,state
+    fieldnames: tenant,l3out_name,node_profile,int_profile,pod_id,node_id,path_ep,int_type,encap,mode
     delimiter: ","
   register: l3out_int
-- name: Add L3out Interface Profile
+- name: Configure L3out Interface Profile
   vars:
-    l3out_int_new: "{{ l3out_int.list[1:] | unique('tenant','l3out_name','node_profile','int_profile','state') }}"
+    l3out_int_new: "{{ l3out_int.list[1:] | unique('tenant','l3out_name','node_profile','int_profile') }}"
   cisco.aci.aci_l3out_logical_interface_profile:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -17,9 +17,9 @@
     l3out: "{{ item.l3out_name }}"
     node_profile: "{{ item.node_profile }}"
     interface_profile: "{{ item.int_profile }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ l3out_int_new }}"
-- name: Add L3out VPC SVI Interface
+- name: Configure L3out VPC SVI Interface
   cisco.aci.aci_l3out_interface:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -35,6 +35,6 @@
     interface_type: "{{ item.int_type}}"
     encap: "{{ item.encap }}"
     mode: "{{ item.mode }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ l3out_int.list[1:] }}"
   when: item.int_type == "ext-svi"

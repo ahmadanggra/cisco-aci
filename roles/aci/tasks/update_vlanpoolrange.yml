@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars//update_vlanpoolrange.csv"
-    fieldnames: pool,pool_allocation_mode,desc,block_start,block_end,alloc_mode,state
+    fieldnames: pool,pool_allocation_mode,desc,block_start,block_end,alloc_mode
     delimiter: ","
   register: vlanpool
 - name: Update Vlan Pool Range
@@ -17,5 +17,5 @@
     block_start: "{{ item.block_start }}"
     block_end: "{{ item.block_end }}"
     allocation_mode: "{{ item.alloc_mode }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ vlanpool.list[1:] }}"

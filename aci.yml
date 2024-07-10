@@ -2,6 +2,8 @@
 - name: Provisioning aci fabric
   # change accordingly usage for hosts
   hosts: sandbox_aci
+  vars:
+    state: present
   connection: local
   gather_facts: false
   # choose role either ndo or aci

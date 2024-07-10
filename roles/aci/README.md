@@ -23,9 +23,14 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+    - hosts: sandbox_aci
+      connection: local
+      gather_facts: false
+      vars:
+        state: present or absent
+        validate_certs: yes or no
       roles:
-         - { role: username.rolename, x: 42 }
+         - aci
 
 License
 -------

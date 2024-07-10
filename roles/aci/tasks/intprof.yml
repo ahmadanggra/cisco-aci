@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/intprof.csv"
-    fieldnames: intprof,desc,state
+    fieldnames: intprof,desc
     delimiter: ","
   register: intprof
-- name: Add Interface Profile
+- name: Configure Interface Profile
   cisco.aci.aci_interface_policy_leaf_profile:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -13,5 +13,5 @@
     validate_certs: "{{ validate_certs }}"
     interface_profile: "{{ item.intprof }}"
     description: "{{ item.desc }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ intprof.list[1:] }}"

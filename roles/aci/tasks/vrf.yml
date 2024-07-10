@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/vrf.csv"
-    fieldnames: tenant,vrf,pol_pref,pol_direc,desc,state
+    fieldnames: tenant,vrf,pol_pref,pol_direc,desc
     delimiter: ","
   register: vrf
-- name: Add Application Profile
+- name: Configure Application Profile
   cisco.aci.aci_vrf:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -16,5 +16,5 @@
     descr: "{{ item.desc }}"
     policy_control_preference: "{{ item.pol_pref }}"
     policy_control_direction: "{{ item.pol_direc }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ vrf.list[1:] }}"

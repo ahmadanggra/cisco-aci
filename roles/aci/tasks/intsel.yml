@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/intsel.csv"
-    fieldnames: interface_profile,access_port_selector,desc,port_blk,from_port,to_port,policy_group,override,interface_type,state,api_rest_method
+    fieldnames: interface_profile,access_port_selector,desc,port_blk,from_port,to_port,policy_group,override,interface_type,api_rest_method
     delimiter: ","
   register: intsel
 - name: Push Interface Selector (without override polgroup)
@@ -19,7 +19,7 @@
     policy_group: "{{ item.policy_group }}"
     interface_type: "{{ item.interface_type }}"
     description: "{{ item.desc }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ intsel.list[1:] }}"
   when: item.override == ""
 # Create aci rest api because currently ansible aci not support override group policy for it interface selector      

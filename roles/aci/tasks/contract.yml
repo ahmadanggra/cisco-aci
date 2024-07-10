@@ -2,12 +2,12 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/contract.csv"
-    fieldnames: tenant,contract,scope,subject,apply_both_direction,reverse_filter,action,filter,entry,ether_type,ip_protocol,dst_port_start,dst_port_end,cont_desc,subj_desc,filt_desc,state
+    fieldnames: tenant,contract,scope,subject,apply_both_direction,reverse_filter,action,filter,entry,ether_type,ip_protocol,dst_port_start,dst_port_end,cont_desc,subj_desc,filt_desc
     delimiter: ","
   register: contract
-- name: Add Filter
+- name: Configure Filter
   vars:
-    unique_filter: "{{ contract.list[1:] | unique('tenant','filter','filt_desc','state') }}"
+    unique_filter: "{{ contract.list[1:] | unique('tenant','filter','filt_desc') }}"
   cisco.aci.aci_filter:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -16,12 +16,12 @@
     filter: "{{ item.filter }}"
     description: "{{ item.filt_desc }}"
     tenant: "{{ item.tenant }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ unique_filter }}"
   when: item.filter != ""
-- name: Add Filter Entries
+- name: Configure Filter Entries
   vars:
-     unique_filentry: "{{ contract.list[1:] | unique('tenant','filter','entry','ether_type','ip_protocol','dst_port_start','dst_port_end','state') }}"
+     unique_filentry: "{{ contract.list[1:] | unique('tenant','filter','entry','ether_type','ip_protocol','dst_port_start','dst_port_end') }}"
   cisco.aci.aci_filter_entry:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -34,12 +34,12 @@
     ip_protocol: "{{ item.ip_protocol }}"
     dst_port_start: "{{ item.dst_port_start }}"
     dst_port_end: "{{ item.dst_port_end }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ unique_filentry }}"
   when: item.entry != ""
-- name: Add Contract
+- name: Configure Contract
   vars:
-    unique_contract: "{{ contract.list[1:] | unique('tenant','contract','scope','cont_desc','state') }}"
+    unique_contract: "{{ contract.list[1:] | unique('tenant','contract','scope','cont_desc') }}"
   cisco.aci.aci_contract:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -49,11 +49,11 @@
     contract: "{{ item.contract }}"
     description: "{{ item.cont_desc }}"
     scope: "{{ item.scope }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ unique_contract }}"
-- name: Add Contract Subject
+- name: Configure Contract Subject
   vars:
-    unique_contsub: "{{ contract.list[1:] | unique('tenant','contract','subject','subj_desc','reverse_filter','apply_both_direction','state') }}"
+    unique_contsub: "{{ contract.list[1:] | unique('tenant','contract','subject','subj_desc','reverse_filter','apply_both_direction') }}"
   cisco.aci.aci_contract_subject:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -65,12 +65,12 @@
     description: "{{ item.subj_desc }}"
     reverse_filter: "{{ item.reverse_filter }}"
     apply_both_direction: "{{ item.apply_both_direction }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ unique_contsub }}"
   when: item.subject != ""
 - name: Bind Contract Subject with Filter
   vars:
-    unique_contract: "{{ contract.list[1:] | unique('tenant','contract','subject','filter','action','state') }}"
+    unique_contract: "{{ contract.list[1:] | unique('tenant','contract','subject','filter','action') }}"
   cisco.aci.aci_contract_subject_to_filter:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -81,6 +81,6 @@
     subject: "{{ item.subject }}"
     filter: "{{ item.filter }}"
     action: "{{ item.action }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ unique_contract }}"
   when: item.contract != "" and item.subject != "" and item.filter != ""

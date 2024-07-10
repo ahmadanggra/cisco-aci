@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/switchprof.csv"
-    fieldnames: leaf_prof_name,leaf_sel_name,leaf_node_blk,from,to,desc,state
+    fieldnames: leaf_prof_name,leaf_sel_name,leaf_node_blk,from,to,desc
     delimiter: ","
   register: switchprof
-- name: Add Switch Profile
+- name: Configure Switch Profile
   cisco.aci.aci_switch_policy_leaf_profile:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -13,7 +13,7 @@
     validate_certs: "{{ validate_certs }}"
     leaf_profile: "{{ item.leaf_prof_name }}"
     description: "{{ item.desc }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ switchprof.list[1:] }}"
 - name: Bind Switch Profile to Leaf Selector
   cisco.aci.aci_switch_leaf_selector:
@@ -26,5 +26,5 @@
     leaf_node_blk: "{{ item.leaf_node_blk }}"
     from: "{{ item.from }}"
     to: "{{ item.to }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ switchprof.list[1:] }}"

@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/vzany.csv"
-    fieldnames: tenant,vrf,contract,type,state
+    fieldnames: tenant,vrf,contract,type
     delimiter: ","
   register: vzany
 - name: Apply vzany 
@@ -15,5 +15,5 @@
     vrf: "{{ item.vrf }}"
     contract: "{{ item.contract }}"
     type: "{{ item.type }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ vzany.list[1:] }}"

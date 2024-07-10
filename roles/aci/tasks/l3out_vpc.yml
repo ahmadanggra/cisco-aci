@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/l3out_vpc.csv"
-    fieldnames: tenant,l3out_name,node_profile,int_profile,pod_id,node_id,path_ep,side,address,secondary_address,state
+    fieldnames: tenant,l3out_name,node_profile,int_profile,pod_id,node_id,path_ep,side,address,secondary_address
     delimiter: ","
   register: l3out_int
-- name: Add L3out VPC SVI IP Address
+- name: Configure L3out VPC SVI IP Configureress
   cisco.aci.aci_l3out_logical_interface_vpc_member:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -20,11 +20,11 @@
     path_ep: "{{ item.path_ep }}"
     side: "{{ item.side }}"
     address: "{{ item.address }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ l3out_int.list[1:] }}"
-- name: Add L3out VPC SVI Secondary IP Address
+- name: Configure L3out VPC SVI Secondary IP Configureress
   vars: 
-    vpc_2nd_address: "{{ l3out_int.list[1:] | unique('tenant','l3out_name','node_profile','int_profile','pod_id','node_id','path_ep','side','secondary_address','state') }}"
+    vpc_2nd_address: "{{ l3out_int.list[1:] | unique('tenant','l3out_name','node_profile','int_profile','pod_id','node_id','path_ep','side','secondary_address') }}"
   cisco.aci.aci_l3out_interface_secondary_ip:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -39,5 +39,5 @@
     path_ep: "{{ item.path_ep }}"
     side: "{{ item.side }}"
     address: "{{ item.secondary_address }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ vpc_2nd_address }}"

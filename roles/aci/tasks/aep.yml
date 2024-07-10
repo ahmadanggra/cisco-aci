@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/aep.csv"
-    fieldnames: aep,desc,infra_vlan,state
+    fieldnames: aep,desc,infra_vlan
     delimiter: ","
   register: aep
-- name: Add AEP
+- name: Configure AEP
   cisco.aci.aci_aep:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -14,5 +14,5 @@
     aep: "{{ item.aep }}"
     description: "{{ item.desc }}"
     infra_vlan: "{{ item.infra_vlan }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ aep.list[1:] }}"

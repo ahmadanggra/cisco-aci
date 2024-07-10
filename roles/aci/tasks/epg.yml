@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/epg.csv"
-    fieldnames: tenant,ap,epg,bd,desc,domain,dom_type,contract,cont_type,state
+    fieldnames: tenant,ap,epg,bd,desc,domain,dom_type,contract,cont_type
     delimiter: ","
   register: epg
-- name: Add EPG
+- name: Configure EPG
   cisco.aci.aci_epg:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -16,7 +16,7 @@
     epg: "{{ item.epg }}"
     description: "{{ item.desc }}"
     bd: "{{ item.bd }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ epg.list[1:] }}"
 - name: Bind EPG to Domain
   cisco.aci.aci_epg_to_domain:
@@ -29,7 +29,7 @@
     epg: "{{ item.epg }}"
     domain: "{{ item.domain }}"
     domain_type: "{{ item.dom_type }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ epg.list[1:] }}"
   when: item.domain != ""
 - name: Bind EPG to Contract
@@ -43,6 +43,6 @@
     epg: "{{ item.epg }}"
     contract: "{{ item.contract }}"
     contract_type: "{{ item.cont_type }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ epg.list[1:] }}"
   when: item.contract != ""

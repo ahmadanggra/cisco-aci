@@ -2,10 +2,10 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/domain.csv"
-    fieldnames: domain,domain_type,vm_provider,state
+    fieldnames: domain,domain_type,vm_provider
     delimiter: ","
   register: domain
-- name: Add domain without vmm
+- name: Configure domain without vmm
   cisco.aci.aci_domain:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -13,10 +13,10 @@
     validate_certs: "{{ validate_certs }}"
     domain: "{{ item.domain }}"
     domain_type: "{{ item.domain_type }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ domain.list[1:] }}"
   when: item.vm_provider == ""
-- name: Add domain with vmm
+- name: Configure domain with vmm
   cisco.aci.aci_domain:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -25,6 +25,6 @@
     domain: "{{ item.domain }}"
     domain_type: "{{ item.domain_type }}"
     vm_provider: "{{ item.vm_provider }}"
-    state: "{{ item.state }}"
+    state: "{{ state }}"
   loop: "{{ domain.list[1:] }}"
   when: item.vm_provider
