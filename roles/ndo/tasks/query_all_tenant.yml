@@ -1,0 +1,12 @@
+---
+- name: Query all tenant
+  cisco.mso.mso_tenant:
+    host: "{{ ansible_host }}"
+    username: "{{ vault_username }}"
+    password: "{{ vault_password }}"
+    state: query
+  register: query_result
+- name: Print all tenants
+  debug:
+    msg: "tenant name: {{ item.name }}, tenant display name: {{ item.displayName }}"
+  loop: "{{ query_result['current'] }}"

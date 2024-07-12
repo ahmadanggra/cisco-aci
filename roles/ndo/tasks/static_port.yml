@@ -1,0 +1,26 @@
+---
+- name: Read CSV File
+  community.general.read_csv:
+    path: "{{ playbook_dir }}/vars/ndo/static_port.csv"
+    fieldnames: schema,template,site,pod,leaf,anp,epg,path,vlan,type,mode,dep_immediacy
+    delimiter: ","
+  register: static_port
+- name: configure static port
+  mso_schema_site_anp_epg_staticport:
+      host: "{{ ansible_host }}"
+      username: "{{ vault_username }}"
+      password: "{{ vault_password }}"
+      schema: "{{ item.schema }}"
+      site: "{{ item.site }}"
+      template: "{{ item.template }}"
+      anp: "{{ item.anp }}"
+      epg: "{{ item.epg }}"
+      pod: "{{ item.pod }}"
+      leaf: "{{ item.leaf }}"
+      path: "{{ item.path }}"
+      vlan: "{{ item.vlan }}"
+      type: "{{ item.type }}"
+      mode: "{{ item.mode }}"
+      deployment_immediacy: "{{ item.dep_immediacy }}"
+      state: "{{ state }}"
+  loop: "{{ static_port.list[1:] }}"

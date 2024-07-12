@@ -1,0 +1,19 @@
+---
+# tasks file for ndo
+- name: Query all tenant
+  import_tasks: query_all_tenant.yml
+  tags:
+    - query_all_tenant
+    - never
+- name: Configure static port
+  import_tasks: static_port.yml
+  tags:
+    - static_port
+    - never
+- name: Help
+  ansible.builtin.debug:
+    msg:
+    - "ansible-playbook ndo.yml --list-tags -> check available tags"
+    - "ansible-playbook ndo.yml --tags tags-1,tags-2,tags-n --ask-vault-pass -> will run tagged task"
+  tags: help
+

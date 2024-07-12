@@ -8,3 +8,6 @@ apic_gts
 [apic_telkom]
 apic_jt-st
 apic_sby 
+
+[ndo_telkom]
+ndo1

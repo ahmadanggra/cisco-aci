@@ -1,0 +1,10 @@
+---
+- name: Provisioning nexus dashboard orcherstrator
+  # change accordingly usage for hosts
+  hosts: ndo_telkom
+  vars:
+    state: query
+  gather_facts: false
+  # choose role either ndo or aci
+  roles:
+    - ndo
