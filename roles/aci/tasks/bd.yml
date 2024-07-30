@@ -2,7 +2,7 @@
 - name: Read CSV File
   community.general.read_csv:
     path: "{{ playbook_dir }}/vars/bd.csv"
-    fieldnames: tenant,bd,vrf,arp_flooding,l2_unknown_unicast,limit_ip_learn,gateway,mask
+    fieldnames: tenant,bd,vrf,arp_flooding,l2_unknown_unicast,limit_ip_learn,enable_routing,gateway,mask,l3out
     delimiter: ","
   register: bd
 - name: Configure Bridge Domain
@@ -17,6 +17,7 @@
     arp_flooding: "{{ item.arp_flooding }}"
     l2_unknown_unicast: "{{ item.l2_unknown_unicast }}"
     limit_ip_learn: "{{ item.limit_ip_learn }}"
+    enable_routing: "{{ item.enable_routing }}"
     state: "{{ state }}"
   loop: "{{ bd.list[1:] }}"
 - name: Update Subnet BD
@@ -32,3 +33,15 @@
     state: "{{ state }}"
   loop: "{{ bd.list[1:] }}"
   when: item.gateway != ""
+- name: Configure L3out BD
+  cisco.aci.aci_bd_to_l3out:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: "{{ validate_certs }}"
+    tenant: "{{ item.tenant }}"
+    bd: "{{ item.bd }}"
+    l3out: "{{ item.l3out }}"
+    state: "{{ state }}"
+  loop: "{{ bd.list[1:] }}"
+  when: item.l3out != ""
